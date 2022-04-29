@@ -1,0 +1,16 @@
+{
+  "name": "photo_seperator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "exif-parser": "^0.1.12",
+    "promise-fs": "^2.1.1",
+    "underscore": "^1.13.3"
+  }
+}
