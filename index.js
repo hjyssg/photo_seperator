@@ -32,7 +32,7 @@ const mkdir = async function (path, quiet) {
     }
 }
 
-const imageTypes = [".jpg", ".png", ".jpeg", ".gif", ".bmp", ".webp"];
+const imageTypes = [".jpg", ".jpeg", ".gif", ".bmp", ".webp"]; // ".png" is excluded
 function escapeDot(arr) {
     return arr.map(e => e.replace(".", "\\."))
 }
@@ -47,10 +47,10 @@ const isImage =  function (fn) {
 //  
 //------------------------------------
 let fp = "Y:\\_Photo2\\test-1"
-let photo_fp_1 = path.resolve(path.resolve(fp, ".."), path.basename(fp)+"-no-meta");
+let no_meta_photo_fp = path.resolve(path.resolve(fp, ".."), path.basename(fp)+"-no-meta");
 const main = async () => {
     let fileNames = await pfs.readdir(fp, {});
-    await mkdir(photo_fp_1);
+    await mkdir(no_meta_photo_fp);
 
     for(let ii = 0; ii < fileNames.length; ii++){
         const fn = fileNames[ii];
@@ -58,9 +58,7 @@ const main = async () => {
            continue;
         }
 
-        let dest_fp = path.resolve(photo_fp_1, fn);
         const tempFp = path.resolve(fp, fn);
-
         try{
             console.log(`${ii}/${fileNames.length} ${fn}`);
             const imgbuffer = await pfs.readFile(tempFp);
@@ -76,7 +74,7 @@ const main = async () => {
             const list = ["Make", "Model", "LensModel", "LensMake", "ExposureMode"];
             const has_no_meta = list.every(e => _.isNull(tags[e]) || _.isUndefined(tags[e]) );
             if(has_no_meta){
-                dest_fp = path.resolve(photo_fp_2, fn);
+                dest_fp = path.resolve(no_meta_photo_fp, fn);
                 await pfs.rename(tempFp, dest_fp);
             }
         }catch(e){
