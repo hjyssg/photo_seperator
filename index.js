@@ -41,19 +41,19 @@ const isImage =  function (fn) {
     return !!fn.toLowerCase().match(imageTypesRegex);
 };
 
-let fp = "Y:\\_Photo2\\2022"
-let photo_fp_1 = path.resolve(fp, "photo_main");
-let photo_fp_2 = path.resolve(fp, "photo_other");
-
-
-
-
+//-------------------------------------
+//  
+//   把完全没有的图片metainfo移动到新文件。其他留在原处
+//  
+//------------------------------------
+let fp = "Y:\\_Photo2\\test-1"
+let photo_fp_1 = path.resolve(path.resolve(fp, ".."), path.basename(fp)+"-no-meta");
 const main = async () => {
     let fileNames = await pfs.readdir(fp, {});
     await mkdir(photo_fp_1);
-    await mkdir(photo_fp_2);
 
-    for(let fn of fileNames){
+    for(let ii = 0; ii < fileNames.length; ii++){
+        const fn = fileNames[ii];
         if(!isImage(fn)){
            continue;
         }
@@ -62,7 +62,7 @@ const main = async () => {
         const tempFp = path.resolve(fp, fn);
 
         try{
-            console.log(tempFp);
+            console.log(`${ii}/${fileNames.length} ${fn}`);
             const imgbuffer = await pfs.readFile(tempFp);
             const parser = ExifParser.create(imgbuffer);
             parser.enableBinaryFields(true);
@@ -77,13 +77,8 @@ const main = async () => {
             const has_no_meta = list.every(e => _.isNull(tags[e]) || _.isUndefined(tags[e]) );
             if(has_no_meta){
                 dest_fp = path.resolve(photo_fp_2, fn);
+                await pfs.rename(tempFp, dest_fp);
             }
-        }catch(e){
-            console.error("["+ tempFp + "]", e)
-        }
-
-        try{
-            await pfs.copyFile(tempFp, dest_fp);
         }catch(e){
             console.error("["+ tempFp + "]", e)
         }
