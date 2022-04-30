@@ -46,7 +46,7 @@ const isImage =  function (fn) {
 //   把完全没有的图片metainfo移动到新文件。其他留在原处
 //  
 //------------------------------------
-let fp = "Y:\\_Photo2\\test-1"
+let fp = process.argv[2]; //"Y:\\_Photo2\\test-1"
 let no_meta_photo_fp = path.resolve(path.resolve(fp, ".."), path.basename(fp)+"-no-meta");
 const main = async () => {
     let fileNames = await pfs.readdir(fp, {});
